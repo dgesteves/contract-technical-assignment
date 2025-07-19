@@ -4,7 +4,9 @@ async function main() {
   console.log("Deploying contracts...");
 
   // Get the contract factories
-  const FinancialPlatform = await ethers.getContractFactory("FinancialPlatform");
+  const FinancialPlatform = await ethers.getContractFactory(
+    "FinancialPlatform"
+  );
   const MockToken = await ethers.getContractFactory("MockToken");
 
   // Deploy FinancialPlatform
@@ -28,7 +30,7 @@ async function main() {
 
   // Register test users
   console.log("Registering test users...");
-  
+
   // Register user1 as Manager
   await financialPlatform.registerUser(
     await user1.getAddress(),
@@ -78,10 +80,10 @@ async function main() {
 
   // Create some sample transactions
   console.log("Creating sample transactions...");
-  
+
   // Connect as user2 and create transactions
   const user2Platform = financialPlatform.connect(user2);
-  
+
   // Transaction 1
   await user2Platform.createTransaction(
     await user3.getAddress(),
@@ -98,7 +100,7 @@ async function main() {
 
   // Connect as user3 and create transactions
   const user3Platform = financialPlatform.connect(user3);
-  
+
   // Transaction 3
   await user3Platform.createTransaction(
     await user2.getAddress(),
@@ -108,7 +110,7 @@ async function main() {
 
   // Request approvals for transactions
   console.log("Requesting approvals...");
-  
+
   // Request approval for transaction 1
   await user2Platform.requestApproval(1);
   console.log("Requested approval for transaction 1");
@@ -124,7 +126,7 @@ async function main() {
   // Process some approvals
   console.log("Processing approvals...");
   const approver1Platform = financialPlatform.connect(approver1);
-  
+
   // Approve transaction 1
   await approver1Platform.processApproval(1, true);
   console.log("Approved transaction 1");
@@ -153,20 +155,20 @@ async function main() {
     network: "localhost",
     contracts: {
       FinancialPlatform: platformAddress,
-      MockToken: tokenAddress
+      MockToken: tokenAddress,
     },
     testAccounts: {
       deployer: await deployer.getAddress(),
       user1: await user1.getAddress(),
       user2: await user2.getAddress(),
       user3: await user3.getAddress(),
-      approver1: await approver1.getAddress()
-    }
+      approver1: await approver1.getAddress(),
+    },
   };
 
-  const fs = require('fs');
+  const fs = require("fs");
   fs.writeFileSync(
-    'deployment-info.json',
+    "deployment-info.json",
     JSON.stringify(deploymentInfo, null, 2)
   );
   console.log("\nDeployment info saved to deployment-info.json");
@@ -177,4 +179,4 @@ main()
   .catch((error) => {
     console.error(error);
     process.exit(1);
-  }); 
+  });

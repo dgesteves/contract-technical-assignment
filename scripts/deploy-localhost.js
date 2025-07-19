@@ -4,20 +4,22 @@ async function main() {
   console.log("🚀 Deploying FinancialPlatform to localhost...");
 
   // Get the contract factory
-  const FinancialPlatform = await ethers.getContractFactory("FinancialPlatform");
+  const FinancialPlatform = await ethers.getContractFactory(
+    "FinancialPlatform"
+  );
 
   // Deploy the contract
   console.log("📦 Deploying FinancialPlatform contract...");
   const financialPlatform = await FinancialPlatform.deploy();
   await financialPlatform.waitForDeployment();
-  
+
   const platformAddress = await financialPlatform.getAddress();
   console.log("✅ FinancialPlatform deployed to:", platformAddress);
 
   // Get signers for testing
   const [deployer, user1, user2, user3] = await ethers.getSigners();
   const deployerAddress = await deployer.getAddress();
-  
+
   console.log("👤 Deployed by:", deployerAddress);
   console.log("🧪 Setting up test data...");
 
@@ -39,7 +41,10 @@ async function main() {
       "alice.user@company.com",
       0 // Regular role
     );
-    console.log("✅ Registered user2 as Regular user:", await user2.getAddress());
+    console.log(
+      "✅ Registered user2 as Regular user:",
+      await user2.getAddress()
+    );
 
     // Register user3 as Regular user
     await financialPlatform.registerUser(
@@ -48,14 +53,19 @@ async function main() {
       "bob.dev@company.com",
       0 // Regular role
     );
-    console.log("✅ Registered user3 as Regular user:", await user3.getAddress());
+    console.log(
+      "✅ Registered user3 as Regular user:",
+      await user3.getAddress()
+    );
 
     // Create a sample transaction
-    const tx = await financialPlatform.connect(user2).createTransaction(
-      await user1.getAddress(),
-      ethers.parseEther("0.1"),
-      "Sample transaction for testing"
-    );
+    const tx = await financialPlatform
+      .connect(user2)
+      .createTransaction(
+        await user1.getAddress(),
+        ethers.parseEther("0.1"),
+        "Sample transaction for testing"
+      );
     await tx.wait();
     console.log("✅ Created sample transaction");
 
@@ -66,14 +76,18 @@ async function main() {
     );
     await approvalTx.wait();
     console.log("✅ Requested approval for sample transaction");
-
   } catch (error) {
     console.log("⚠️  Warning: Could not set up test data:", error.message);
   }
 
   // Get network info
   const network = await ethers.provider.getNetwork();
-  console.log("🌐 Network:", network.name || "localhost", "Chain ID:", network.chainId.toString());
+  console.log(
+    "🌐 Network:",
+    network.name || "localhost",
+    "Chain ID:",
+    network.chainId.toString()
+  );
 
   console.log("\n📋 Deployment Summary:");
   console.log("=".repeat(60));

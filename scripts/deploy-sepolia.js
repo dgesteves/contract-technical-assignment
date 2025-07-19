@@ -4,13 +4,15 @@ async function main() {
   console.log("🚀 Deploying FinancialPlatform to Sepolia testnet...");
 
   // Get the contract factory
-  const FinancialPlatform = await ethers.getContractFactory("FinancialPlatform");
+  const FinancialPlatform = await ethers.getContractFactory(
+    "FinancialPlatform"
+  );
 
   // Deploy the contract
   console.log("📦 Deploying FinancialPlatform contract...");
   const financialPlatform = await FinancialPlatform.deploy();
   await financialPlatform.waitForDeployment();
-  
+
   const platformAddress = await financialPlatform.getAddress();
   console.log("✅ FinancialPlatform deployed to:", platformAddress);
 
@@ -21,14 +23,21 @@ async function main() {
 
   // Get network info
   const network = await ethers.provider.getNetwork();
-  console.log("🌐 Network:", network.name, "Chain ID:", network.chainId.toString());
+  console.log(
+    "🌐 Network:",
+    network.name,
+    "Chain ID:",
+    network.chainId.toString()
+  );
 
   console.log("\n📋 Deployment Summary:");
   console.log("=".repeat(50));
   console.log(`Contract Address: ${platformAddress}`);
   console.log(`Network: ${network.name} (${network.chainId})`);
   console.log(`Deployer: ${deployerAddress}`);
-  console.log(`Block Explorer: https://sepolia.etherscan.io/address/${platformAddress}`);
+  console.log(
+    `Block Explorer: https://sepolia.etherscan.io/address/${platformAddress}`
+  );
   console.log("=".repeat(50));
 
   console.log("\n🔧 Next Steps:");
