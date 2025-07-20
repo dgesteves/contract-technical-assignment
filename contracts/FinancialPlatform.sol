@@ -83,17 +83,37 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
     mapping(uint256 => Approval) public approvals;
     mapping(address => User) public users;
     mapping(address => bool) public registeredUsers;
-    
+
     // Add these two arrays for efficient iteration
     address[] public allUserAddresses;
     uint256[] public allTransactionIds;
 
     // Events
-    event TransactionCreated(uint256 indexed transactionId, address indexed from, address indexed to, uint256 amount);
-    event TransactionStatusUpdated(uint256 indexed transactionId, TransactionStatus status);
-    event ApprovalRequested(uint256 indexed approvalId, uint256 indexed transactionId, address indexed requester);
-    event ApprovalProcessed(uint256 indexed approvalId, ApprovalStatus status, address indexed approver);
-    event UserRegistered(uint256 indexed userId, address indexed walletAddress, string name);
+    event TransactionCreated(
+        uint256 indexed transactionId,
+        address indexed from,
+        address indexed to,
+        uint256 amount
+    );
+    event TransactionStatusUpdated(
+        uint256 indexed transactionId,
+        TransactionStatus status
+    );
+    event ApprovalRequested(
+        uint256 indexed approvalId,
+        uint256 indexed transactionId,
+        address indexed requester
+    );
+    event ApprovalProcessed(
+        uint256 indexed approvalId,
+        ApprovalStatus status,
+        address indexed approver
+    );
+    event UserRegistered(
+        uint256 indexed userId,
+        address indexed walletAddress,
+        string name
+    );
     event UserRoleUpdated(address indexed userAddress, UserRole newRole);
 
     // Modifiers
@@ -103,7 +123,11 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
     }
 
     modifier onlyApprover() {
-        require(hasRole(APPROVER_ROLE, msg.sender) || hasRole(ADMIN_ROLE, msg.sender), "Not authorized");
+        require(
+            hasRole(APPROVER_ROLE, msg.sender) ||
+                hasRole(ADMIN_ROLE, msg.sender),
+            "Not authorized"
+        );
         _;
     }
 
@@ -116,9 +140,14 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(ADMIN_ROLE, msg.sender);
         _grantRole(APPROVER_ROLE, msg.sender);
-        
+
         // Register the deployer as the first user
-        _registerUser(msg.sender, "Platform Admin", "admin@platform.com", UserRole.Admin);
+        _registerUser(
+            msg.sender,
+            "Platform Admin",
+            "admin@platform.com",
+            UserRole.Admin
+        );
     }
 
     /**
@@ -132,7 +161,7 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
     ) external onlyAdmin {
         require(!registeredUsers[walletAddress], "User already registered");
         require(walletAddress != address(0), "Invalid wallet address");
-        
+
         _registerUser(walletAddress, name, email, role);
     }
 
@@ -174,9 +203,18 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
         uint256 transactionId,
         string memory reason
     ) external onlyRegisteredUser {
-        require(transactions[transactionId].id != 0, "Transaction does not exist");
-        require(transactions[transactionId].from == msg.sender, "Not transaction owner");
-        require(transactions[transactionId].status == TransactionStatus.Pending, "Transaction not pending");
+        require(
+            transactions[transactionId].id != 0,
+            "Transaction does not exist"
+        );
+        require(
+            transactions[transactionId].from == msg.sender,
+            "Not transaction owner"
+        );
+        require(
+            transactions[transactionId].status == TransactionStatus.Pending,
+            "Transaction not pending"
+        );
 
         _approvalIds++;
         uint256 approvalId = _approvalIds;
@@ -207,9 +245,14 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
         string memory reason
     ) external onlyApprover {
         require(approvals[approvalId].id != 0, "Approval does not exist");
-        require(approvals[approvalId].status == ApprovalStatus.Pending, "Approval already processed");
+        require(
+            approvals[approvalId].status == ApprovalStatus.Pending,
+            "Approval already processed"
+        );
 
-        ApprovalStatus status = approved ? ApprovalStatus.Approved : ApprovalStatus.Rejected;
+        ApprovalStatus status = approved
+            ? ApprovalStatus.Approved
+            : ApprovalStatus.Rejected;
         approvals[approvalId].status = status;
         approvals[approvalId].approver = msg.sender;
         approvals[approvalId].reason = reason;
@@ -223,28 +266,48 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
         }
 
         emit ApprovalProcessed(approvalId, status, msg.sender);
-        emit TransactionStatusUpdated(transactionId, transactions[transactionId].status);
+        emit TransactionStatusUpdated(
+            transactionId,
+            transactions[transactionId].status
+        );
     }
 
     /**
      * @dev Complete a transaction (only after approval)
      */
-    function completeTransaction(uint256 transactionId) external onlyRegisteredUser {
-        require(transactions[transactionId].id != 0, "Transaction does not exist");
-        require(transactions[transactionId].from == msg.sender, "Not transaction owner");
-        require(transactions[transactionId].status == TransactionStatus.Active, "Transaction not active");
+    function completeTransaction(
+        uint256 transactionId
+    ) external onlyRegisteredUser {
+        require(
+            transactions[transactionId].id != 0,
+            "Transaction does not exist"
+        );
+        require(
+            transactions[transactionId].from == msg.sender,
+            "Not transaction owner"
+        );
+        require(
+            transactions[transactionId].status == TransactionStatus.Active,
+            "Transaction not active"
+        );
 
         transactions[transactionId].status = TransactionStatus.Completed;
-        emit TransactionStatusUpdated(transactionId, TransactionStatus.Completed);
+        emit TransactionStatusUpdated(
+            transactionId,
+            TransactionStatus.Completed
+        );
     }
 
     /**
      * @dev Update user role (admin only)
      */
-    function updateUserRole(address userAddress, UserRole newRole) external onlyAdmin {
+    function updateUserRole(
+        address userAddress,
+        UserRole newRole
+    ) external onlyAdmin {
         require(registeredUsers[userAddress], "User not registered");
         users[userAddress].role = newRole;
-        
+
         // Update access control roles
         if (newRole == UserRole.Admin) {
             _grantRole(ADMIN_ROLE, userAddress);
@@ -263,14 +326,18 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
     /**
      * @dev Get transaction by ID
      */
-    function getTransaction(uint256 transactionId) external view returns (Transaction memory) {
+    function getTransaction(
+        uint256 transactionId
+    ) external view returns (Transaction memory) {
         return transactions[transactionId];
     }
 
     /**
      * @dev Get approval by ID
      */
-    function getApproval(uint256 approvalId) external view returns (Approval memory) {
+    function getApproval(
+        uint256 approvalId
+    ) external view returns (Approval memory) {
         return approvals[approvalId];
     }
 
@@ -284,12 +351,17 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
     /**
      * @dev Get all transactions for a user
      */
-    function getUserTransactions(address userAddress) external view returns (uint256[] memory) {
+    function getUserTransactions(
+        address userAddress
+    ) external view returns (uint256[] memory) {
         uint256[] memory userTransactions = new uint256[](_transactionIds);
         uint256 count = 0;
 
         for (uint256 i = 1; i <= _transactionIds; i++) {
-            if (transactions[i].from == userAddress || transactions[i].to == userAddress) {
+            if (
+                transactions[i].from == userAddress ||
+                transactions[i].to == userAddress
+            ) {
                 userTransactions[count] = i;
                 count++;
             }
@@ -349,14 +421,24 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
     /**
      * @dev Get all registered users (admin only)
      */
-    function getAllRegisteredUsers() external view onlyAdmin returns (address[] memory) {
+    function getAllRegisteredUsers()
+        external
+        view
+        onlyAdmin
+        returns (address[] memory)
+    {
         return allUserAddresses;
     }
 
     /**
      * @dev Get all transactions (admin only)
      */
-    function getAllTransactions() external view onlyAdmin returns (uint256[] memory) {
+    function getAllTransactions()
+        external
+        view
+        onlyAdmin
+        returns (uint256[] memory)
+    {
         return allTransactionIds;
     }
 
@@ -381,7 +463,7 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
         });
 
         registeredUsers[walletAddress] = true;
-        
+
         // Add this line to track user addresses
         allUserAddresses.push(walletAddress);
 
@@ -395,4 +477,4 @@ contract FinancialPlatform is AccessControl, ReentrancyGuard {
 
         emit UserRegistered(newUserId, walletAddress, name);
     }
-} 
+}

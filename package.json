@@ -2,14 +2,7 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "deploy:localhost": "hardhat run --network localhost scripts/deploy-localhost.js",
-    "deploy:sepolia": "hardhat run --network sepolia scripts/deploy-sepolia.js",
-    "deploy:holesky": "hardhat run --network holesky scripts/deploy.js",
-    "node": "hardhat node",
-    "dev:setup": "hardhat run --network localhost scripts/start-dev.js",
-    "seed": "hardhat run --network localhost scripts/seed-data.js",
-    "verify:sepolia": "hardhat verify --network sepolia",
-    "verify:holesky": "hardhat verify --network holesky"
+    "deploy:holesky": "hardhat run --network holesky scripts/deploy.js"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
