@@ -406,11 +406,49 @@ async function main() {
   };
 
   const fs = require("fs");
+  const path = require("path");
+
+  // Save deployment info JSON
   fs.writeFileSync(
     "deployment-info.json",
     JSON.stringify(deploymentInfo, null, 2)
   );
   console.log("\nDeployment info saved to deployment-info.json");
+
+  // Update .env.local in financial-dashboard
+  const envPath = path.join(__dirname, "../../financial-dashboard/.env.local");
+
+  try {
+    // Read current .env.local file
+    let envContent = fs.readFileSync(envPath, "utf8");
+
+    // Update the NEXT_PUBLIC_CONTRACT_ADDRESS line
+    const contractAddressRegex = /^NEXT_PUBLIC_CONTRACT_ADDRESS=.*$/m;
+    const newContractAddressLine = `NEXT_PUBLIC_CONTRACT_ADDRESS=${platformAddress}`;
+
+    if (contractAddressRegex.test(envContent)) {
+      // Replace existing line
+      envContent = envContent.replace(
+        contractAddressRegex,
+        newContractAddressLine
+      );
+    } else {
+      // Add new line if it doesn't exist
+      envContent += `\n${newContractAddressLine}\n`;
+    }
+
+    // Write back to .env.local
+    fs.writeFileSync(envPath, envContent);
+    console.log(
+      `Updated NEXT_PUBLIC_CONTRACT_ADDRESS in financial-dashboard/.env.local to: ${platformAddress}`
+    );
+  } catch (error) {
+    console.warn("Warning: Could not update .env.local file:", error.message);
+    console.log(
+      "Please manually update NEXT_PUBLIC_CONTRACT_ADDRESS in financial-dashboard/.env.local to:",
+      platformAddress
+    );
+  }
 }
 
 main()
