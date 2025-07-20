@@ -2,7 +2,9 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "deploy:holesky": "hardhat run --network holesky scripts/deploy.js"
+    "deploy:holesky": "hardhat run --network holesky scripts/deploy.js",
+    "start:localhost": "npx hardhat node",
+    "deploy:localhost": "npx hardhat run scripts/deploy.js --network localhost"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
