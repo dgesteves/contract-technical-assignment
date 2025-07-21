@@ -4,7 +4,8 @@
     "test": "hardhat test",
     "deploy:holesky": "hardhat run --network holesky scripts/deploy.js",
     "start:localhost": "npx hardhat node",
-    "deploy:localhost": "npx hardhat run scripts/deploy.js --network localhost"
+    "deploy:localhost": "npx hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
