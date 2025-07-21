@@ -567,6 +567,10 @@ async function main() {
     // Read current .env.local file
     let envContent = fs.readFileSync(envPath, "utf8");
 
+    // TODO: if "deploy:localhost": "npx hardhat run scripts/deploy.js --network localhost",
+    // TODO: if "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia"
+    // TODO: Update the correct environment variables depending on the network
+
     // Update the NEXT_PUBLIC_CONTRACT_ADDRESS line
     const contractAddressRegex = /^NEXT_PUBLIC_CONTRACT_ADDRESS=.*$/m;
     const newContractAddressLine = `NEXT_PUBLIC_CONTRACT_ADDRESS=${platformAddress}`;

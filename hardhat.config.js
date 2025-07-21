@@ -20,9 +20,7 @@ const config = {
       chainId: 31337,
     },
     sepolia: {
-      url:
-        process.env.SEPOLIA_RPC_URL ||
-        "https://sepolia.infura.io/v3/YOUR_INFURA_KEY",
+      url: process.env.SEPOLIA_RPC_URL || "",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 11155111,
       timeout: 120000,
@@ -30,9 +28,7 @@ const config = {
       gas: "auto",
     },
     holesky: {
-      url:
-        process.env.HOLESKY_RPC_URL ||
-        "https://ethereum-holesky.publicnode.com",
+      url: process.env.HOLESKY_RPC_URL || "",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
       chainId: 17000,
       timeout: 120000, // 2 minutes timeout
